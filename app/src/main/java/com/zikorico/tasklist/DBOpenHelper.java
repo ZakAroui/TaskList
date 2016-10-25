@@ -1,4 +1,4 @@
-package com.zikorico.noteme;
+package com.zikorico.tasklist;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

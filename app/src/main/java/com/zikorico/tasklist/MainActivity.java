@@ -1,4 +1,4 @@
-package com.zikorico.noteme;
+package com.zikorico.tasklist;
 
 import android.app.LoaderManager;
 import android.content.ContentValues;

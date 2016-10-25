@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zikorico.noteme">
+    package="com.zikorico.tasklist">
 
     <application
         android:allowBackup="true"
@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.zikorico.tasklist.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -17,16 +17,16 @@
         </activity>
 
         <provider
-            android:name=".NotesProvider"
-            android:authorities="com.zikorico.noteme.notesprovider"
+            android:name="com.zikorico.tasklist.NotesProvider"
+            android:authorities="com.zikorico.tasklist.notesprovider"
             android:exported="false" />
 
-        <activity android:name=".EditorActivity"
+        <activity android:name="com.zikorico.tasklist.EditorActivity"
             android:label="EditorActivity"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName="com.zikorico.tasklist.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.zikorico.noteme.MainActivity"/>
+                android:value="com.zikorico.tasklist.MainActivity"/>
             ></activity>
     </application>
 

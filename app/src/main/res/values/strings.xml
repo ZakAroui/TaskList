@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NoteMe</string>
+    <string name="app_name">TaskList</string>
     <string name="delete_all_notes">Delete all notes</string>
     <string name="create_sample_data">Create sample data</string>
     <string name="all_deleted">All notes deleted!</string>
