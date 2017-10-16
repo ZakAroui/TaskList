@@ -18,6 +18,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     private static int i;
 
+    //todo - add column to store json for audio-note filenames
+
     private static final String TABLE_CREATE =
             "CREATE TABLE " + TABLE_NOTES + " (" +
                     NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
