@@ -1,4 +1,4 @@
-package com.zikorico.tasklist;
+package com.ikazme.tasklist;
 
 import android.content.ContentValues;
 import android.content.Intent;

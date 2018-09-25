@@ -1,4 +1,4 @@
-package com.zikorico.tasklist;
+package com.ikazme.tasklist;
 
 
 import android.content.ContentProvider;
@@ -11,7 +11,7 @@ import android.support.annotation.Nullable;
 
 public class NotesProvider extends ContentProvider {
 
-    private static final String AUTHORITY = "com.zikorico.tasklist.notesprovider";
+    private static final String AUTHORITY = "com.ikazme.tasklist.notesprovider";
     private static final String BASE_PATH = "notes";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH );
 

@@ -1,4 +1,4 @@
-package com.zikorico.tasklist;
+package com.ikazme.tasklist;
 
 import org.junit.Test;
 
