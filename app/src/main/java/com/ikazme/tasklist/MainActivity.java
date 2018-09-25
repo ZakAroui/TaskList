@@ -1,4 +1,4 @@
-package com.zikorico.tasklist;
+package com.ikazme.tasklist;
 
 import android.app.LoaderManager;
 import android.content.ContentValues;
@@ -31,6 +31,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
         setContentView(R.layout.activity_main);
 
         String[] from = {DBOpenHelper.NOTE_TEXT};
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity
         cursorAdapter = new SimpleCursorAdapter(this,
                 R.layout.note_list_item, null, from, to, 0);
 
-        ListView list = (ListView) findViewById(android.R.id.list);
+        ListView list = findViewById(R.id.tasksListView);
         list.setAdapter(cursorAdapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

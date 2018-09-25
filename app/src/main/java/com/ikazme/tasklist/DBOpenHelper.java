@@ -1,4 +1,4 @@
-package com.zikorico.tasklist;
+package com.ikazme.tasklist;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
