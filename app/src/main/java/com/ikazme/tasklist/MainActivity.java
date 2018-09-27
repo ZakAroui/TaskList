@@ -54,6 +54,14 @@ public class MainActivity extends AppCompatActivity
         });
 
         getLoaderManager().initLoader(0, null, this);
+
+        //TODO - SEARCH FEATURE
+        //TODO - SHARING FEATURE
+        //TODO - OCR FEATURE
+        //TODO - DAGGER
+        //TODO - USE ANDROID ARCHITECHTURE
+        //TODO - AUDIO RECORDING AS A NOTE
+        //TODO - SPEECH-TO-TEXT
     }
 
     @Override
