@@ -23,7 +23,7 @@
         </activity>
 
         <provider
-            android:name="com.ikazme.tasklist.NotesProvider"
+            android:name="com.ikazme.tasklist.database.NotesProvider"
             android:authorities="com.ikazme.tasklist.notesprovider"
             android:exported="false" />
 
@@ -34,6 +34,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ikazme.tasklist.MainActivity"/>
             ></activity>
+
+        <provider android:name=".database.SearchSuggestionsProvider"
+            android:authorities="com.ikazme.tasklist.database.SearchSuggestionsProvider" />
     </application>
 
 </manifest>

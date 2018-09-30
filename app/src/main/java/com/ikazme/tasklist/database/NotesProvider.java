@@ -1,4 +1,4 @@
-package com.ikazme.tasklist;
+package com.ikazme.tasklist.database;
 
 
 import android.content.ContentProvider;
@@ -15,12 +15,10 @@ public class NotesProvider extends ContentProvider {
     private static final String BASE_PATH = "notes";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH );
 
-    // Constant to identify the requested operation
     private static final int NOTES = 1;
     private static final int NOTES_ID = 2;
 
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-
     public static final String CONTENT_ITEM_TYPE = "Note";
 
     static {
@@ -32,7 +30,6 @@ public class NotesProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         DBOpenHelper helper = new DBOpenHelper(getContext());
-
         database = helper.getWritableDatabase();
         return true;
     }
@@ -44,7 +41,12 @@ public class NotesProvider extends ContentProvider {
             selection = DBOpenHelper.NOTE_ID + "=" + uri.getLastPathSegment();
         }
 
-        return database.query(DBOpenHelper.TABLE_NOTES, DBOpenHelper.ALL_COLUMNS, selection, null, null, null,
+        return database.query(DBOpenHelper.TABLE_NOTES,
+                DBOpenHelper.ALL_COLUMNS,
+                selection,
+                selectionArgs,
+                null,
+                null,
                 DBOpenHelper.NOTE_CREATED + " DESC");
     }
 
@@ -57,17 +59,24 @@ public class NotesProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        long id = database.insert(DBOpenHelper.TABLE_NOTES, null, values);
+        long id = database.insert(DBOpenHelper.TABLE_NOTES,
+                null,
+                values);
         return Uri.parse(BASE_PATH + "/" + id);
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return database.delete(DBOpenHelper.TABLE_NOTES, selection, selectionArgs);
+        return database.delete(DBOpenHelper.TABLE_NOTES,
+                selection,
+                selectionArgs);
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return database.update(DBOpenHelper.TABLE_NOTES, values, selection,selectionArgs);
+        return database.update(DBOpenHelper.TABLE_NOTES,
+                values,
+                selection,
+                selectionArgs);
     }
 }
