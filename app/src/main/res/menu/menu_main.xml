@@ -19,4 +19,9 @@
         android:orderInCategory="101"
         android:title="@string/delete_all_notes"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_clear_history"
+        android:orderInCategory="101"
+        android:title="Clear Search History"
+        app:showAsAction="never" />
 </menu>

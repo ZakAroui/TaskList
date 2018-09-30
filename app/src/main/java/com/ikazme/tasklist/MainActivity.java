@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity
             searchInNotes();
         }
 
-        //TODO - SEARCH FEATURE
         //TODO - SPEECH-TO-TEXT
         //TODO - AUDIO RECORDING AS A NOTE
         //TODO - DAGGER
@@ -102,26 +101,31 @@ public class MainActivity extends AppCompatActivity
         restartLoader();
     }
 
-    //TODO
-//    private void confirmClearHistory() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//
-//        builder.setTitle("Are you sure?")
-//                .setMessage("Do you really want to clear your app's contact search history?")
-//                .setPositiveButton("Yes",  new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        clearSearchHistory();
-//                    }
-//                })
-//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog,int id) {
-//                        dialog.cancel();
-//                    }
-//                })
-//                .show();
-//    }
+    private void clearSearchHistory(){
+        SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                SearchSuggestionsProvider.AUTHORITY, SearchSuggestionsProvider.MODE);
+        suggestions.clearHistory();
+    }
+
+    private void confirmClearHistory() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Are you sure?")
+                .setMessage("Do you really want to clear your app's search history?")
+                .setPositiveButton("Yes",  new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        clearSearchHistory();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog,int id) {
+                        dialog.cancel();
+                    }
+                })
+                .show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -153,6 +157,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.action_delete_all:
                 deleteAllNotes();
+                break;
+            case R.id.action_clear_history:
+                confirmClearHistory();
                 break;
         }
         return super.onOptionsItemSelected(item);
