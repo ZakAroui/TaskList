@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -13,10 +16,13 @@ import android.widget.Toast;
 
 public class EditorActivity extends AppCompatActivity {
 
+    private static final String LOG_TAG = EditorActivity.class.getSimpleName();
+
     private String action;
     private EditText editor;
     private String noteFilter;
     private String oldText;
+    private String mNoteShare;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,10 +97,27 @@ public class EditorActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (action == Intent.ACTION_EDIT) {
+        if (Intent.ACTION_EDIT.equals(action)) {
             getMenuInflater().inflate(R.menu.menu_editor, menu);
+            MenuItem menuItem = menu.findItem(R.id.action_share);
+            ShareActionProvider mShareActionProvider =
+                    (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+            if (mShareActionProvider != null ) {
+                mShareActionProvider.setShareIntent(createShareContactIntent());
+            } else {
+                Log.w(LOG_TAG, "onCreateOptionsMenu(): Share Action Provider is null!");
+            }
         }
         return true;
+    }
+
+    private Intent createShareContactIntent() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT,
+                mNoteShare);
+        return shareIntent;
     }
 
     @Override
