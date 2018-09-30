@@ -10,4 +10,5 @@
     <string name="delete_note">Delete Note</string>
     <string name="note_deleted">Note Deleted</string>
     <string name="edit_note">Edit</string>
+    <string name="action_share">Share Note</string>
 </resources>
