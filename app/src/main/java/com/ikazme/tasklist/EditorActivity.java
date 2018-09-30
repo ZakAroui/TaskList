@@ -12,10 +12,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.ikazme.tasklist.database.DBOpenHelper;
 import com.ikazme.tasklist.database.NotesProvider;
+import com.ikazme.tasklist.utils.Utils;
 
 public class EditorActivity extends AppCompatActivity {
 
@@ -49,6 +49,8 @@ public class EditorActivity extends AppCompatActivity {
             mNoteShare = oldText;
             editor.setText(oldText);
             editor.requestFocus();
+
+            cursor.close();
         }
     }
 
@@ -78,7 +80,7 @@ public class EditorActivity extends AppCompatActivity {
         ContentValues values = new ContentValues();
         values.put(DBOpenHelper.NOTE_TEXT, noteText);
         getContentResolver().update(NotesProvider.CONTENT_URI, values, noteFilter, null);
-        Toast.makeText(this, getString(R.string.note_updated), Toast.LENGTH_SHORT).show();
+        Utils.showShortToast(getString(R.string.note_updated), this);
         setResult(RESULT_OK);
     }
 
@@ -137,7 +139,7 @@ public class EditorActivity extends AppCompatActivity {
 
     private void deleteNote() {
         getContentResolver().delete(NotesProvider.CONTENT_URI, noteFilter, null);
-        Toast.makeText(this, getString(R.string.note_deleted), Toast.LENGTH_SHORT).show();
+        Utils.showShortToast(getString(R.string.note_deleted), this);
         setResult(RESULT_OK);
         finish();
     }
