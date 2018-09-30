@@ -23,11 +23,11 @@ import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
 import com.ikazme.tasklist.database.DBOpenHelper;
 import com.ikazme.tasklist.database.SearchSuggestionsProvider;
 import com.ikazme.tasklist.database.NotesProvider;
+import com.ikazme.tasklist.utils.Utils;
 
 public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>
@@ -171,12 +171,9 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int button) {
                         if (button == DialogInterface.BUTTON_POSITIVE) {
-                            //Insert Data management code here
                             getContentResolver().delete(NotesProvider.CONTENT_URI,null,null);
                             restartLoader();
-                            Toast.makeText(MainActivity.this,
-                                    getString(R.string.all_deleted ),
-                                    Toast.LENGTH_SHORT).show();
+                            Utils.showShortToast(getString(R.string.all_deleted ), MainActivity.this);
                         }
                     }
                 };
