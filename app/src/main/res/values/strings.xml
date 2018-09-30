@@ -11,4 +11,5 @@
     <string name="note_deleted">Note Deleted</string>
     <string name="edit_note">Edit</string>
     <string name="action_share">Share Note</string>
+    <string name="search_hint">Search All Notes</string>
 </resources>
