@@ -29,7 +29,7 @@ public class EditorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
 
-        editor = (EditText) findViewById(R.id.editText);
+        editor = findViewById(R.id.editText);
         Intent intent = getIntent();
         Uri uri = intent.getParcelableExtra(NotesProvider.CONTENT_ITEM_TYPE);
 
@@ -43,6 +43,7 @@ public class EditorActivity extends AppCompatActivity {
             Cursor cursor = getContentResolver().query(uri, DBOpenHelper.ALL_COLUMNS, noteFilter, null, null);
             cursor.moveToFirst();
             oldText = cursor.getString(cursor.getColumnIndex(DBOpenHelper.NOTE_TEXT));
+            mNoteShare = oldText;
             editor.setText(oldText);
             editor.requestFocus();
         }
@@ -63,11 +64,7 @@ public class EditorActivity extends AppCompatActivity {
                 if (newText.equals(oldText)){
                     setResult(RESULT_CANCELED);
                 }
-                else if (newText.length() == 0){
-                    // like that it keeps the note as it is if it's empty
-                    // the delete() can be used to delete the note when it's empty
-                    //delete();
-                } else {
+                else {
                     updateNote(newText);
                 }
         }
