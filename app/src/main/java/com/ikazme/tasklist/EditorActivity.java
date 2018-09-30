@@ -14,6 +14,9 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ikazme.tasklist.database.DBOpenHelper;
+import com.ikazme.tasklist.database.NotesProvider;
+
 public class EditorActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = EditorActivity.class.getSimpleName();

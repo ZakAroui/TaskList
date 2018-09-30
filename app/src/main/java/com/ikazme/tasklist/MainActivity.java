@@ -1,7 +1,9 @@
 package com.ikazme.tasklist;
 
 import android.app.LoaderManager;
+import android.app.SearchManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +11,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -18,22 +21,62 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
+
+import com.ikazme.tasklist.database.DBOpenHelper;
+import com.ikazme.tasklist.database.SearchSuggestionsProvider;
+import com.ikazme.tasklist.database.NotesProvider;
 
 public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>
 {
     private static final int EDITOR_REQUEST_CODE = 1001;
+    public static final int NOTES_QUERY_ID = 0;
+
+    private static final String SORT_ORDER = DBOpenHelper.NOTE_CREATED + " DESC";
+
+    private final String SEARCH_NOTE = "search";
     private CursorAdapter cursorAdapter;
+    private String currentAction;
+    private String mSearchQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
+        }
         setContentView(R.layout.activity_main);
+
+        populateNotes();
+
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            currentAction = SEARCH_NOTE;
+            mSearchQuery = intent.getStringExtra(SearchManager.QUERY);
+            getSupportActionBar().setSubtitle("Searched: \""+ mSearchQuery +"\"");
+
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                    SearchSuggestionsProvider.AUTHORITY, SearchSuggestionsProvider.MODE);
+            suggestions.saveRecentQuery(mSearchQuery, null);
+
+            searchInNotes();
+        }
+
+        //TODO - SEARCH FEATURE
+        //TODO - SPEECH-TO-TEXT
+        //TODO - AUDIO RECORDING AS A NOTE
+        //TODO - DAGGER
+        //TODO - USE ANDROID ARCHITECHTURE
+        //TODO - OCR FEATURE
+    }
+
+    private void populateNotes(){
+        invalidateOptionsMenu();
 
         String[] from = {DBOpenHelper.NOTE_TEXT};
         int[] to = {R.id.tvNote};
@@ -52,19 +95,48 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        getLoaderManager().initLoader(0, null, this);
-
-        //TODO - SEARCH FEATURE
-        //TODO - OCR FEATURE
-        //TODO - DAGGER
-        //TODO - USE ANDROID ARCHITECHTURE
-        //TODO - AUDIO RECORDING AS A NOTE
-        //TODO - SPEECH-TO-TEXT
+        getLoaderManager().initLoader(NOTES_QUERY_ID, null, this);
     }
+
+    private void searchInNotes() {
+        restartLoader();
+    }
+
+    //TODO
+//    private void confirmClearHistory() {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//
+//        builder.setTitle("Are you sure?")
+//                .setMessage("Do you really want to clear your app's contact search history?")
+//                .setPositiveButton("Yes",  new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        clearSearchHistory();
+//                    }
+//                })
+//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog,int id) {
+//                        dialog.cancel();
+//                    }
+//                })
+//                .show();
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        if(SEARCH_NOTE.equals(currentAction)){
+            return false;
+        }
+
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(true);
+        searchView.setQueryRefinementEnabled(true);
+
         return true;
     }
 
@@ -73,6 +145,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         switch (id){
+            case R.id.app_bar_search:
+                onSearchRequested();
+                break;
             case R.id.action_create_sample:
                 insertSampleData();
                 break;
@@ -115,7 +190,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void restartLoader() {
-        getLoaderManager().restartLoader(0, null, this);
+        getLoaderManager().restartLoader(NOTES_QUERY_ID, null, this);
     }
 
     private void insertNote(String noteText) {
@@ -129,8 +204,41 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, NotesProvider.CONTENT_URI,
-                null, null, null, null);
+
+        if(SEARCH_NOTE.equals(currentAction)){
+            String[] searchQueryArgs = mSearchQuery.split("\\s+");
+            StringBuilder selPrefixPartSb = new StringBuilder();
+            for (int i = 0; i<searchQueryArgs.length;i++) {
+                if(i == 0) selPrefixPartSb.append("( ");
+                selPrefixPartSb.append(DBOpenHelper.NOTE_TEXT + " LIKE ? ");
+                if(i == (searchQueryArgs.length-1)){
+                    selPrefixPartSb.append(") ");
+                } else{
+                    selPrefixPartSb.append("AND ");
+                }
+            }
+
+            String searchSelection = selPrefixPartSb.toString();
+            String[] mSelectionArgs = new String[searchQueryArgs.length];
+            for (int i=0;i<searchQueryArgs.length;i++) {
+                mSelectionArgs[i] = "%"+searchQueryArgs[i]+"%";
+            }
+
+            return new CursorLoader(this,
+                    NotesProvider.CONTENT_URI,
+                    DBOpenHelper.ALL_COLUMNS,
+                    searchSelection,
+                    mSelectionArgs,
+                    SORT_ORDER);
+
+        }
+
+        return new CursorLoader(this,
+                NotesProvider.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
     }
 
     @Override
@@ -154,4 +262,5 @@ public class MainActivity extends AppCompatActivity
             restartLoader();
         }
     }
+
 }
