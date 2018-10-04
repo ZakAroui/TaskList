@@ -12,4 +12,5 @@
     <string name="edit_note">Edit</string>
     <string name="action_share">Share Note</string>
     <string name="search_hint">Search All Notes</string>
+    <string name="start_typing">Start typing ...</string>
 </resources>
