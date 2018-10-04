@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity
 
         //TODO - SPEECH-TO-TEXT
         //TODO - AUDIO RECORDING AS A NOTE
-        //TODO - DAGGER
         //TODO - USE ANDROID ARCHITECHTURE
         //TODO - OCR FEATURE
     }

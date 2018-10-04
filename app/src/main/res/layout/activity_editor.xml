@@ -38,5 +38,6 @@
         app:srcCompat="@drawable/ic_record_note"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:elevation="0dp"
         />
 </android.support.constraint.ConstraintLayout>

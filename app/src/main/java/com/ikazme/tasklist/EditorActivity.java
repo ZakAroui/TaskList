@@ -2,7 +2,9 @@ package com.ikazme.tasklist;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -11,11 +13,15 @@ import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 
 import com.ikazme.tasklist.database.DBOpenHelper;
 import com.ikazme.tasklist.database.NotesProvider;
+import com.ikazme.tasklist.service.PermissionsService;
 import com.ikazme.tasklist.utils.Utils;
+
+import static com.ikazme.tasklist.utils.Utils.PERMISSIONS_REQUEST_RECORD_AUDIO;
 
 public class EditorActivity extends AppCompatActivity {
 
@@ -26,6 +32,8 @@ public class EditorActivity extends AppCompatActivity {
     private String noteFilter;
     private String oldText;
     private String mNoteShare;
+
+    private MediaRecorder mMediaRecorder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,10 +145,39 @@ public class EditorActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSIONS_REQUEST_RECORD_AUDIO) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Utils.showShortToast("Permission granted!", this);
+                recordAudio();
+            } else {
+                Utils.showShortToast("Grant the permission to record an audio note.", this);
+            }
+        }
+    }
+
     private void deleteNote() {
         getContentResolver().delete(NotesProvider.CONTENT_URI, noteFilter, null);
         Utils.showShortToast(getString(R.string.note_deleted), this);
         setResult(RESULT_OK);
         finish();
+    }
+
+    public void recordAudioNote(View view){
+        if(PermissionsService.getInstance().hasOrRequestRecordAudioPerm(this, PERMISSIONS_REQUEST_RECORD_AUDIO)){
+            recordAudio();
+        }
+
+    }
+
+    private void recordAudio() {
+        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_2_TS);
+
+
+
     }
 }
