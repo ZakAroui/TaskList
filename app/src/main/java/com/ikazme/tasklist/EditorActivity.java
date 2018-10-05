@@ -1,25 +1,32 @@
 package com.ikazme.tasklist;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.EditText;
 
 import com.ikazme.tasklist.database.DBOpenHelper;
 import com.ikazme.tasklist.database.NotesProvider;
 import com.ikazme.tasklist.service.PermissionsService;
 import com.ikazme.tasklist.utils.Utils;
+
+import java.io.IOException;
 
 import static com.ikazme.tasklist.utils.Utils.PERMISSIONS_REQUEST_RECORD_AUDIO;
 
@@ -32,15 +39,37 @@ public class EditorActivity extends AppCompatActivity {
     private String noteFilter;
     private String oldText;
     private String mNoteShare;
+    private FloatingActionButton mRecordNoteBtn;
 
-    private MediaRecorder mMediaRecorder;
+    private static String mFileName = null;
+    private MediaRecorder mRecorder;
+    private MediaPlayer mPlayer = null;
 
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
 
         editor = findViewById(R.id.editText);
+        mRecordNoteBtn = findViewById(R.id.recordNotefloatingButton);
+        mRecordNoteBtn.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    Utils.showShortToast(event.toString(), EditorActivity.this);
+                    startNoteRecording();
+                    return true;
+                } else if(event.getAction() == MotionEvent.ACTION_UP){
+                    Utils.showShortToast(event.toString(), EditorActivity.this);
+                    stopNoteRecording();
+                    return true;
+                }
+
+                return false;
+            }
+        });
         Intent intent = getIntent();
         Uri uri = intent.getParcelableExtra(NotesProvider.CONTENT_ITEM_TYPE);
 
@@ -149,11 +178,10 @@ public class EditorActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if (requestCode == PERMISSIONS_REQUEST_RECORD_AUDIO) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                PermissionsService.getInstance().setPermissionToRecordAccepted(true);
                 Utils.showShortToast("Permission granted!", this);
-                recordAudio();
             } else {
                 Utils.showShortToast("Grant the permission to record an audio note.", this);
             }
@@ -167,17 +195,70 @@ public class EditorActivity extends AppCompatActivity {
         finish();
     }
 
-    public void recordAudioNote(View view){
+    private void startNoteRecording() {
+        //TODO - CONTINUE HERE - https://developer.android.com/guide/topics/media/mediarecorder#java
         if(PermissionsService.getInstance().hasOrRequestRecordAudioPerm(this, PERMISSIONS_REQUEST_RECORD_AUDIO)){
-            recordAudio();
-        }
+            mFileName = getExternalCacheDir().getAbsolutePath();
+            mFileName += "/audiorecordtest.3gp";
 
+            mRecorder = new MediaRecorder();
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mRecorder.setOutputFile(mFileName);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+            try {
+                mRecorder.prepare();
+            } catch (IOException e) {
+                Utils.showShortToast("prepare() failed" ,this);
+            }
+
+            mRecorder.start();
+        }
     }
 
-    private void recordAudio() {
-        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_2_TS);
+    private void stopNoteRecording(){
+        if(mRecorder != null){
+            mRecorder.stop();
+            mRecorder.release();
+            mRecorder = null;
+        }
+    }
 
+    private void onPlay(boolean start) {
+        if (start) {
+            startPlaying();
+        } else {
+            stopPlaying();
+        }
+    }
 
+    private void startPlaying() {
+        mPlayer = new MediaPlayer();
+        try {
+            mPlayer.setDataSource(mFileName);
+            mPlayer.prepare();
+            mPlayer.start();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "prepare() failed");
+        }
+    }
+    private void stopPlaying() {
+        mPlayer.release();
+        mPlayer = null;
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mRecorder != null) {
+            mRecorder.release();
+            mRecorder = null;
+        }
+
+        if (mPlayer != null) {
+            mPlayer.release();
+            mPlayer = null;
+        }
     }
 }
