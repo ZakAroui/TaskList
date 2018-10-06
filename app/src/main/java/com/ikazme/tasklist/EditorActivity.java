@@ -58,11 +58,9 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN){
-                    Utils.showShortToast(event.toString(), EditorActivity.this);
                     startNoteRecording();
                     return true;
                 } else if(event.getAction() == MotionEvent.ACTION_UP){
-                    Utils.showShortToast(event.toString(), EditorActivity.this);
                     stopNoteRecording();
                     return true;
                 }
@@ -197,6 +195,8 @@ public class EditorActivity extends AppCompatActivity {
 
     private void startNoteRecording() {
         //TODO - CONTINUE HERE - https://developer.android.com/guide/topics/media/mediarecorder#java
+        //TODO - FIX FILE LOCATION
+        //TODO - FIX DISTINCT FILE NAME
         if(PermissionsService.getInstance().hasOrRequestRecordAudioPerm(this, PERMISSIONS_REQUEST_RECORD_AUDIO)){
             mFileName = getExternalCacheDir().getAbsolutePath();
             mFileName += "/audiorecordtest.3gp";
@@ -223,6 +223,12 @@ public class EditorActivity extends AppCompatActivity {
             mRecorder.release();
             mRecorder = null;
         }
+    }
+
+
+    //TODO - ADD PLAYER
+    public void playNoteRecording(View view){
+
     }
 
     private void onPlay(boolean start) {
