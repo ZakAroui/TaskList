@@ -5,10 +5,13 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +31,8 @@ import com.ikazme.tasklist.utils.Utils;
 
 import java.io.IOException;
 
+import static android.R.drawable.ic_media_pause;
+import static android.R.drawable.ic_media_play;
 import static com.ikazme.tasklist.utils.Utils.PERMISSIONS_REQUEST_RECORD_AUDIO;
 
 public class EditorActivity extends AppCompatActivity {
@@ -40,10 +45,12 @@ public class EditorActivity extends AppCompatActivity {
     private String oldText;
     private String mNoteShare;
     private FloatingActionButton mRecordNoteBtn;
+    private FloatingActionButton mPlayNoteBtn;
 
     private static String mFileName = null;
     private MediaRecorder mRecorder;
     private MediaPlayer mPlayer = null;
+    private boolean mStartPlaying = true;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -53,6 +60,7 @@ public class EditorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_editor);
 
         editor = findViewById(R.id.editText);
+        mPlayNoteBtn = findViewById(R.id.playFloatingButton);
         mRecordNoteBtn = findViewById(R.id.recordNotefloatingButton);
         mRecordNoteBtn.setOnTouchListener(new OnTouchListener() {
             @Override
@@ -227,8 +235,15 @@ public class EditorActivity extends AppCompatActivity {
 
 
     //TODO - ADD PLAYER
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void playNoteRecording(View view){
-
+        onPlay(mStartPlaying);
+        if (mStartPlaying) {
+            mPlayNoteBtn.setBackgroundDrawable(getDrawable(ic_media_pause));
+        } else {
+            mPlayNoteBtn.setBackgroundDrawable(getDrawable(ic_media_play));
+        }
+        mStartPlaying = !mStartPlaying;
     }
 
     private void onPlay(boolean start) {
