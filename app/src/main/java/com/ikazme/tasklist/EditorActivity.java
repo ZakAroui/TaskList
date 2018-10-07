@@ -1,10 +1,12 @@
 package com.ikazme.tasklist;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -66,9 +68,11 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    mRecordNoteBtn.setBackgroundTintList(getResources().getColorStateList(R.color.red_tint));
                     startNoteRecording();
                     return true;
                 } else if(event.getAction() == MotionEvent.ACTION_UP){
+                    mRecordNoteBtn.setBackgroundTintList(getResources().getColorStateList(R.color.accent_tint));
                     stopNoteRecording();
                     return true;
                 }
@@ -227,21 +231,25 @@ public class EditorActivity extends AppCompatActivity {
 
     private void stopNoteRecording(){
         if(mRecorder != null){
-            mRecorder.stop();
-            mRecorder.release();
-            mRecorder = null;
+            try{
+                mRecorder.stop();
+                mRecorder.release();
+                mRecorder = null;
+            } catch (Exception e){
+                Log.e(LOG_TAG, "stopNoteRecording: ", e);
+            }
         }
     }
 
 
-    //TODO - ADD PLAYER
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void playNoteRecording(View view){
         onPlay(mStartPlaying);
         if (mStartPlaying) {
-            mPlayNoteBtn.setBackgroundDrawable(getDrawable(ic_media_pause));
+            mPlayNoteBtn.setBackgroundDrawable(getResources().getDrawable(ic_media_pause));
+            mPlayNoteBtn.setBackgroundTintList(getResources().getColorStateList(R.color.green_tint));
         } else {
-            mPlayNoteBtn.setBackgroundDrawable(getDrawable(ic_media_play));
+            mPlayNoteBtn.setBackgroundDrawable(getResources().getDrawable(ic_media_play));
+            mPlayNoteBtn.setBackgroundTintList(getResources().getColorStateList(R.color.accent_tint));
         }
         mStartPlaying = !mStartPlaying;
     }
