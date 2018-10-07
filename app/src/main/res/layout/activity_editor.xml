@@ -33,12 +33,12 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
+        app:backgroundTint="@color/accent_tint"
+        app:elevation="0dp"
         app:fabSize="normal"
-        app:srcCompat="@drawable/ic_record_note"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:elevation="0dp"
-        />
+        app:srcCompat="@drawable/ic_record_note" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/playFloatingButton"
