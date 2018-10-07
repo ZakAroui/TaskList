@@ -1,8 +1,8 @@
 package com.ikazme.tasklist.ui;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +11,6 @@ import android.widget.TextView;
 import com.ikazme.tasklist.R;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class AudioNotesAdapter extends RecyclerView.Adapter<AudioNotesAdapter.ViewHolder> {
 
@@ -46,12 +43,11 @@ public class AudioNotesAdapter extends RecyclerView.Adapter<AudioNotesAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.audioNoteName)
-        TextView audioNoteName;
+        private TextView audioNoteName;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            audioNoteName = itemView.findViewById(R.id.audioNoteName);
         }
     }
 }

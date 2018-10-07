@@ -13,6 +13,6 @@
         android:id="@+id/action_share"
         android:title="@string/action_share"
         app:showAsAction="always"
-        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"/>
+        app:actionProviderClass="androidx.appcompat.widget.ShareActionProvider"/>
 
 </menu>
