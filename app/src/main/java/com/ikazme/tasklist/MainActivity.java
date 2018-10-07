@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +30,7 @@ import com.ikazme.tasklist.database.DBOpenHelper;
 import com.ikazme.tasklist.database.SearchSuggestionsProvider;
 import com.ikazme.tasklist.database.NotesProvider;
 import com.ikazme.tasklist.utils.Utils;
+import com.ikazme.tasklist.viewmodel.MainViewModel;
 
 public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>
@@ -42,6 +45,8 @@ public class MainActivity extends AppCompatActivity
     private String currentAction;
     private String mSearchQuery;
 
+    private MainViewModel mViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +57,8 @@ public class MainActivity extends AppCompatActivity
         }
         setContentView(R.layout.activity_main);
 
+        initViewModel();
+        
         populateNotes();
 
         Intent intent = getIntent();
@@ -71,6 +78,11 @@ public class MainActivity extends AppCompatActivity
         //TODO - AUDIO RECORDING AS A NOTE
         //TODO - USE ANDROID ARCHITECHTURE
         //TODO - OCR FEATURE
+    }
+
+    private void initViewModel() {
+        mViewModel = ViewModelProviders.of(this)
+                .get(MainViewModel.class);
     }
 
     private void populateNotes(){
@@ -184,10 +196,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void insertSampleData() {
-        insertNote("simple note");
-        insertNote("multiple \n line");
-        insertNote("this note is a very long one that even the writer of this note cannot" +
-                "keep up with the speed of the rabbit who is running on the TV in front of him :P");
+        //todo
+        mViewModel.addSampleData();
+//        insertNote("simple note");
+//        insertNote("multiple \n line");
+//        insertNote("this note is a very long one that even the writer of this note cannot" +
+//                "keep up with the speed of the rabbit who is running on the TV in front of him :P");
 
         restartLoader();
     }
