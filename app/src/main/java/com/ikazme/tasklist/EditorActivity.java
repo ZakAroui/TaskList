@@ -31,6 +31,7 @@ import com.ikazme.tasklist.database.NotesProvider;
 import com.ikazme.tasklist.service.PermissionsService;
 import com.ikazme.tasklist.utils.Utils;
 
+import java.io.File;
 import java.io.IOException;
 
 import static android.R.drawable.ic_media_pause;
@@ -74,6 +75,10 @@ public class EditorActivity extends AppCompatActivity {
                 } else if(event.getAction() == MotionEvent.ACTION_UP){
                     mRecordNoteBtn.setBackgroundTintList(getResources().getColorStateList(R.color.accent_tint));
                     stopNoteRecording();
+                    if((event.getEventTime() - event.getDownTime()) < 1000) {
+                        Utils.showShortToast("Very short note recording.", EditorActivity.this);
+                        deleteRecording(mFileName);
+                    }
                     return true;
                 }
 
@@ -190,7 +195,6 @@ public class EditorActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQUEST_RECORD_AUDIO) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                PermissionsService.getInstance().setPermissionToRecordAccepted(true);
                 Utils.showShortToast("Permission granted!", this);
             } else {
                 Utils.showShortToast("Grant the permission to record an audio note.", this);
@@ -244,13 +248,6 @@ public class EditorActivity extends AppCompatActivity {
 
     public void playNoteRecording(View view){
         onPlay(mStartPlaying);
-        if (mStartPlaying) {
-            mPlayNoteBtn.setBackgroundDrawable(getResources().getDrawable(ic_media_pause));
-            mPlayNoteBtn.setBackgroundTintList(getResources().getColorStateList(R.color.green_tint));
-        } else {
-            mPlayNoteBtn.setBackgroundDrawable(getResources().getDrawable(ic_media_play));
-            mPlayNoteBtn.setBackgroundTintList(getResources().getColorStateList(R.color.accent_tint));
-        }
         mStartPlaying = !mStartPlaying;
     }
 
@@ -263,18 +260,37 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void startPlaying() {
+        mPlayNoteBtn.setImageDrawable(getResources().getDrawable(ic_media_pause));
+        mPlayNoteBtn.setBackgroundTintList(getResources().getColorStateList(R.color.green_tint));
+
         mPlayer = new MediaPlayer();
         try {
             mPlayer.setDataSource(mFileName);
             mPlayer.prepare();
             mPlayer.start();
+            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    stopPlaying();
+                }
+            });
         } catch (IOException e) {
             Log.e(LOG_TAG, "prepare() failed");
+            stopPlaying();
         }
     }
     private void stopPlaying() {
+        mPlayNoteBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_audio));
+        mPlayNoteBtn.setBackgroundTintList(getResources().getColorStateList(R.color.accent_tint));
+        mStartPlaying = !mStartPlaying;
+
         mPlayer.release();
         mPlayer = null;
+    }
+
+    private boolean deleteRecording(String fileName){
+        File file = new File(fileName);
+        return file.delete();
     }
 
     @Override

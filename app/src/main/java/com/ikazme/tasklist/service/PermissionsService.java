@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 
 
@@ -15,7 +16,6 @@ public class PermissionsService {
 
     private static PermissionsService permissionsService;
 
-    private boolean permissionToRecordAccepted = false;
     private String [] audioRecordPermission = {Manifest.permission.RECORD_AUDIO};
 
 
@@ -33,26 +33,13 @@ public class PermissionsService {
 
 
     public boolean hasOrRequestRecordAudioPerm(AppCompatActivity activity, int reqCode){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !permissionToRecordAccepted) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             activity.requestPermissions(audioRecordPermission, reqCode);
             return false;
         } else {
             return true;
         }
-    }
-
-    public boolean hasRecordAudioPerm(AppCompatActivity activity){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-
-    public void setPermissionToRecordAccepted(boolean permissionToRecordAccepted) {
-        this.permissionToRecordAccepted = permissionToRecordAccepted;
     }
 
 }
