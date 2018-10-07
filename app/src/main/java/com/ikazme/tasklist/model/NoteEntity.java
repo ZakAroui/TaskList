@@ -3,13 +3,22 @@ package com.ikazme.tasklist.model;
 import java.util.Date;
 import java.util.List;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+@Entity(tableName = "notes")
 public class NoteEntity {
 
+    @PrimaryKey(autoGenerate = true)
     private int id;
     private Date date;
     private String text;
+    @TypeConverters(RecordingTypeConverter.class)
     private List<String> audioFilenames;
 
+    @Ignore
     public NoteEntity() {
     }
 
@@ -20,6 +29,7 @@ public class NoteEntity {
         this.audioFilenames = audioFilenames;
     }
 
+    @Ignore
     public NoteEntity(Date date, String text, List<String> audioFilenames) {
         this.date = date;
         this.text = text;
