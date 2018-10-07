@@ -17,6 +17,8 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.Menu;
@@ -25,14 +27,21 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.ikazme.tasklist.database.DBOpenHelper;
 import com.ikazme.tasklist.database.NotesProvider;
 import com.ikazme.tasklist.service.PermissionsService;
+import com.ikazme.tasklist.ui.AudioNotesAdapter;
 import com.ikazme.tasklist.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static android.R.drawable.ic_media_pause;
 import static android.R.drawable.ic_media_play;
@@ -41,6 +50,11 @@ import static com.ikazme.tasklist.utils.Utils.PERMISSIONS_REQUEST_RECORD_AUDIO;
 public class EditorActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = EditorActivity.class.getSimpleName();
+
+    @BindView(R.id.noteRecordingsList)
+    RecyclerView mRecyclerView;
+
+    AudioNotesAdapter mAudioNotesAdapter;
 
     private String action;
     private EditText editor;
@@ -61,6 +75,9 @@ public class EditorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
+        ButterKnife.bind(this);
+        initRecordingList();
 
         editor = findViewById(R.id.editText);
         mPlayNoteBtn = findViewById(R.id.playFloatingButton);
@@ -104,6 +121,15 @@ public class EditorActivity extends AppCompatActivity {
 
             cursor.close();
         }
+    }
+
+    private void initRecordingList() {
+        mRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayout = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(linearLayout);
+
+        mAudioNotesAdapter = new AudioNotesAdapter(Arrays.asList("audio1", "audio2"), this);
+        mRecyclerView.setAdapter(mAudioNotesAdapter);
     }
 
     private void finishEditing(){
@@ -260,6 +286,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void startPlaying() {
+
         mPlayNoteBtn.setImageDrawable(getResources().getDrawable(ic_media_pause));
         mPlayNoteBtn.setBackgroundTintList(getResources().getColorStateList(R.color.green_tint));
 
@@ -288,9 +315,11 @@ public class EditorActivity extends AppCompatActivity {
         mPlayer = null;
     }
 
-    private boolean deleteRecording(String fileName){
-        File file = new File(fileName);
-        return file.delete();
+    private void deleteRecording(String fileName){
+        if(mFileName != null){
+            File file = new File(fileName);
+            file.delete();
+        }
     }
 
     @Override
