@@ -74,9 +74,6 @@ public class MainActivity extends AppCompatActivity
             searchInNotes();
         }
 
-        //TODO - SPEECH-TO-TEXT
-        //TODO - AUDIO RECORDING AS A NOTE
-        //TODO - USE ANDROID ARCHITECHTURE
         //TODO - OCR FEATURE
     }
 
@@ -196,7 +193,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void insertSampleData() {
-        //todo
+        //todo - remove the new room code to a new app
+        //todo - media player https://www.tutorialspoint.com/android/android_mediaplayer.htm
         mViewModel.addSampleData();
 //        insertNote("simple note");
 //        insertNote("multiple \n line");
