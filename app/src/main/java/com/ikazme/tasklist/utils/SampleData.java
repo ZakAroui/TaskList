@@ -1,7 +1,5 @@
 package com.ikazme.tasklist.utils;
 
-import com.ikazme.tasklist.model.NoteEntity;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -19,13 +17,13 @@ public class SampleData {
 
 
 
-    public static List<NoteEntity> getNotes(){
-        List<NoteEntity> notes = new ArrayList<>();
-        notes.add(new NoteEntity(1, getDate(0), SAMPLE_TEXT_1, Collections.<String>emptyList()));
-        notes.add(new NoteEntity(2, getDate(-1), SAMPLE_TEXT_2, Collections.<String>emptyList()));
-        notes.add(new NoteEntity(3, getDate(-2), SAMPLE_TEXT_3, Collections.<String>emptyList()));
-        return notes;
-    }
+//    public static List<NoteEntity> getNotes(){
+//        List<NoteEntity> notes = new ArrayList<>();
+//        notes.add(new NoteEntity(1, getDate(0), SAMPLE_TEXT_1, Collections.<String>emptyList()));
+//        notes.add(new NoteEntity(2, getDate(-1), SAMPLE_TEXT_2, Collections.<String>emptyList()));
+//        notes.add(new NoteEntity(3, getDate(-2), SAMPLE_TEXT_3, Collections.<String>emptyList()));
+//        return notes;
+//    }
 
     private static Date getDate(int diff) {
         GregorianCalendar cal = new GregorianCalendar();
