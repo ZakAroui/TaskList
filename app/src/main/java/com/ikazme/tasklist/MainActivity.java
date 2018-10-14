@@ -193,13 +193,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void insertSampleData() {
-        //todo - remove the new room code to a new app
         //todo - media player https://www.tutorialspoint.com/android/android_mediaplayer.htm
-        mViewModel.addSampleData();
-//        insertNote("simple note");
-//        insertNote("multiple \n line");
-//        insertNote("this note is a very long one that even the writer of this note cannot" +
-//                "keep up with the speed of the rabbit who is running on the TV in front of him :P");
+        insertNote("simple note");
+        insertNote("multiple \n line");
+        insertNote("this note is a very long one that even the writer of this note cannot" +
+                "keep up with the speed of the rabbit who is running on the TV in front of him :P");
 
         restartLoader();
     }
