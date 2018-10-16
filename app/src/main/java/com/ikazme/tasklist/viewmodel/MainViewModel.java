@@ -1,8 +1,13 @@
 package com.ikazme.tasklist.viewmodel;
 
 import android.app.Application;
+import android.content.ContentValues;
+import android.net.Uri;
+import android.util.Log;
 
 import com.ikazme.tasklist.database.AppRepository;
+import com.ikazme.tasklist.database.DBOpenHelper;
+import com.ikazme.tasklist.database.NotesProvider;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -20,6 +25,24 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     //todo - move some activity code here
+
+//    private void insertSampleData() {
+//        //todo - media player https://www.tutorialspoint.com/android/android_mediaplayer.htm
+//        insertNote("simple note");
+//        insertNote("multiple \n line");
+//        insertNote("this note is a very long one that even the writer of this note cannot" +
+//                "keep up with the speed of the rabbit who is running on the TV in front of him :P");
+//
+//        restartLoader();
+//    }
+
+//    private void insertNote(String noteText) {
+//        ContentValues values = new ContentValues();
+//        values.put(DBOpenHelper.NOTE_TEXT, noteText);
+//        Uri noteUri = getContentResolver().insert(NotesProvider.CONTENT_URI,
+//                values);
+//        Log.d("MainActivity", "Inserted note " + noteUri.getLastPathSegment());
+//    }
 
     public void addSampleData() {
         mRepository.addSampleData();
