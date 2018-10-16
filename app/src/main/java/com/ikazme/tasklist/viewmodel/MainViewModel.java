@@ -3,11 +3,13 @@ package com.ikazme.tasklist.viewmodel;
 import android.app.Application;
 import android.content.ContentValues;
 import android.net.Uri;
+import android.provider.SearchRecentSuggestions;
 import android.util.Log;
 
 import com.ikazme.tasklist.database.AppRepository;
 import com.ikazme.tasklist.database.DBOpenHelper;
 import com.ikazme.tasklist.database.NotesProvider;
+import com.ikazme.tasklist.database.SearchSuggestionsProvider;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -25,6 +27,12 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     //todo - move some activity code here
+
+//    private void clearSearchHistory(){
+//        SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+//                SearchSuggestionsProvider.AUTHORITY, SearchSuggestionsProvider.MODE);
+//        suggestions.clearHistory();
+//    }
 
 //    private void insertSampleData() {
 //        //todo - media player https://www.tutorialspoint.com/android/android_mediaplayer.htm
