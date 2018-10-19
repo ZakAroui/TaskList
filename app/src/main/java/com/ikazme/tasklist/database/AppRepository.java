@@ -21,7 +21,6 @@ public class AppRepository {
     }
 
     private AppRepository(Context context) {
-//        mNotes = SampleData.getNotes();
 //        mDb = TasklistDatabase.getInstance(context);
     }
 
